@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:news_app/helper/data.dart';
+import 'package:news_app/helper/news.dart';
+import 'package:news_app/models/articleModel.dart';
 import 'package:news_app/models/category_model.dart';
 
 class Home extends StatefulWidget {
@@ -11,12 +13,25 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   List<CategoryModel> categories=new List<CategoryModel>();
+  List<ArticleModel> articles =new List<ArticleModel>();
+
+  bool _loading=true;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     categories=getCategories();
+  }
+
+  getNews() async{
+    News newsClass=News();
+    await newsClass.getNews();
+    articles =newsClass.news;
+    setState(() {
+      _loading =true;
+    });
+
   }
 
   @override
@@ -97,6 +112,23 @@ class CategoryTile extends StatelessWidget {
             )
           ],
         ),
+      ),
+    );
+  }
+}
+class BlogTile extends StatelessWidget {
+  final String imageUrl,title,desc;
+  BlogTile({@required this.imageUrl,@required  this.desc,@required  this.title})
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        children: <Widget>[
+          Image.network(imageUrl),
+          Text(title),
+          Text(desc)
+        ],
       ),
     );
   }
