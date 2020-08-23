@@ -13,17 +13,18 @@ class News{
     var jsonData =jsonDecode(response.body);
 
     if (jsonData["status"]=="ok"){
+
+
       jsonData["articles"].forEach((element){
 
-        if (element["urlToImage"]==!null && element["description"] ==!null){
+        if (element["urlToImage"] != null && element["description"] != null){
+          print(jsonData["urlToImage"]);
           ArticleModel articleModel =ArticleModel(
             title: element["title"],
             author:element["author"],
             description: element["description"],
             urlToImage: element["urlToImage"],
-            url: element["url"],
-            publishedAt: element["publishedAt"],
-
+            url: element["url"]
 
           );
           news.add(articleModel);

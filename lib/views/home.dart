@@ -22,6 +22,8 @@ class _HomeState extends State<Home> {
     // TODO: implement initState
     super.initState();
     categories=getCategories();
+    getNews();
+
   }
 
   getNews() async{
@@ -29,7 +31,7 @@ class _HomeState extends State<Home> {
     await newsClass.getNews();
     articles =newsClass.news;
     setState(() {
-      _loading =true;
+      _loading =false;
     });
 
   }
@@ -54,28 +56,57 @@ class _HomeState extends State<Home> {
           ],
         ),
       ),
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: <Widget>[
-            Container(
-              height: 120.0,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  itemCount: categories.length,
-                  itemBuilder: (context, index){
-                    return CategoryTile(
-                      imageUrl: categories[index].imageUrl,
-                      categoryName: categories[index].categoryName,
-                    );
-                  }
+      body: _loading? Center(
+        child: Container(
+          child: CircularProgressIndicator(),
+        ),
+      ):
 
+      SingleChildScrollView(
+        child: Container(
+           padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: <Widget>[
+
+              ///Categories
+              Container(
+                height: 70.0,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    itemCount: categories.length,
+                    itemBuilder: (context, index){
+                      return CategoryTile(
+                        imageUrl: categories[index].imageUrl,
+                        categoryName: categories[index].categoryName,
+                      );
+                    }
+
+                ),
               ),
-            )
-          ],
+
+              ///Blog
+              Container(
+                padding: EdgeInsets.only(top:16),
+                child: ListView.builder(
+
+                    itemCount: articles.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context,index){
+                      return BlogTile(
+                        imageUrl: articles[index].urlToImage,
+                        title: articles[index].title,
+                        desc: articles[index].description,
+                      );
+                    }
+                ),
+              ),
+            ],
+          ),
         ),
       ),
+
+
     );
   }
 }
@@ -118,15 +149,20 @@ class CategoryTile extends StatelessWidget {
 }
 class BlogTile extends StatelessWidget {
   final String imageUrl,title,desc;
-  BlogTile({@required this.imageUrl,@required  this.desc,@required  this.title})
+  BlogTile({@required this.imageUrl,@required  this.desc,@required  this.title});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Column(
         children: <Widget>[
+
           Image.network(imageUrl),
-          Text(title),
+          Text(title,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w500
+          ),),
           Text(desc)
         ],
       ),
